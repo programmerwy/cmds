@@ -1,0 +1,18 @@
+{
+  "name": "fisdir",
+  "version": "1.0.0",
+  "description": "",
+  "main": "fisdir.js",
+  "dependencies": {
+    "yargs": "^4.8.1"
+  },
+  "devDependencies": {},
+  "keywords": [
+    "fisdir"
+  ],
+  "bin": {
+    "fisdir": "fisdir.js"
+  },
+  "author": "wangyan01",
+  "license": "ISC"
+}
