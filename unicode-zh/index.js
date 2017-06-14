@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 'use strict';
+const clipboardy = require('clipboardy');
 var argv = require('yargs')
   .usage('Usage: unicode str')
   .example('unicode 哈哈', '\u54c8\u54c8')
@@ -13,18 +14,12 @@ function convert(str) {
   });
 }
 
-function pbcopy(data) {
-  var proc = require('child_process').spawn('pbcopy');
-  proc.stdin.write(data);
-  proc.stdin.end();
-}
-
 !function() {
   if(!argv._[0]) {
     console.log('unicode-zh need an argv[手动微笑]');
     return false;
   }
   var output = convert(argv._[0]);
-  pbcopy(output);
+  clipboardy.writeSync(output);
   console.log(output);
 }();
