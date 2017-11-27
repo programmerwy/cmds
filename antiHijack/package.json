@@ -1,0 +1,24 @@
+{
+  "name": "anti-hijack",
+  "version": "1.0.0",
+  "description": "enject js code to modify md5 of origin file",
+  "main": "index.js",
+  "scripts": {
+    "test": "babel-node index.js"
+  },
+  "keywords": [
+    "zyb",
+    "anti-hijack"
+  ],
+  "author": "wangyan01@zuoyebang",
+  "license": "ISC",
+  "bin": {
+    "antihijack": "index.js"
+  },
+  "dependencies": {
+    "csv": "^2.0.0"
+  },
+  "devDependencies": {
+    "babel-preset-env": "^1.6.1"
+  }
+}
