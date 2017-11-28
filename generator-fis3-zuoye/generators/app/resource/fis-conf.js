@@ -91,9 +91,9 @@ var deployTargets = {
 fis.util.map(deployTargets, function(serverName, serverConfig) {
     var _deployConfig = fis.util.clone(serverConfig.deploy || deployConfig.map(function(item) {
         // 区分测试机用户目录 /home/homework  or /home/rd
-        return fis.util.merge({
+        return Object.assign({}, item, {
             to: item.to.replace(/homework/, serverConfig.user || 'homework')
-        }, item);
+        });
     }));
 
     for (var i = 0; i < _deployConfig.length; i++) {
