@@ -1,21 +1,38 @@
-var Generator = require('yeoman-generator');
+var Generator = require('../lib/base');
 var fs = require('fs-extra'),
     path = require('path');
 
 module.exports = class extends Generator {
     constructor(args, opts) {
         super(args, opts);
-
-        this.option('babel');
-        this.argument('project', { type: String, required: true });
-        this.argument('common', { type: String });
+    }
+    prompting() {
+        return this.prompt([{
+            type: 'input',
+            name: 'name',
+            message: 'Your project name',
+            default: this.appname // Default to current folder name
+        }, {
+            type: 'name',
+            name: 'cmnPrefix',
+            message: 'Common-prefix your project relayed',
+            default: ''
+        }, {
+            type: 'name',
+            name: 'fis version',
+            message: 'FIS version you use(fisp/fis3)',
+            default: 'fis3'
+        }]).then((answers) => {
+            this.project = answers.name;
+            this.cmnPrefix = answers.cmnPrefix;
+        });
     }
     paths() {
-        this.destinationRoot(this.options.project);
+        this.destinationRoot(this.project);
     }
     build() {
         var self = this;
-        // mkdir
+        // mkdirs
         self._private_mkdirs(['config', 'page', 'static', 'test/page', 'widget']);
         // touch files
         fs.readdir(`${path.dirname(__dirname)}/app/resource`, 'utf-8', (err, files) => {
@@ -24,45 +41,19 @@ module.exports = class extends Generator {
                 try {
                     var data = self.fs.read(`${path.dirname(__dirname)}/app/resource/${item}`);
                     if (item == 'map.json') {
-                        self.fs.write(`config/${self.options.project}-map.json`, data);
+                        self.fs.write(`config/${self.project}-map.json`, data);
                     } else {
                         self.fs.write(item,
                             data
-                            .replace(/\${namespace}/g, self.options.project)
-                            .replace(/\${common}/g, `${self.options.common || ''}common`)
-                            .replace(/\${mcommon}/g, `${self.options.common || ''}mcommon`)
+                            .replace(/\${namespace}/g, self.project)
+                            .replace(/\${common}/g, `${self.cmnPrefix || ''}common`)
+                            .replace(/\${mcommon}/g, `${self.cmnPrefix || ''}mcommon`)
                         );
                     }
                 } catch (e) {
                     self._private_err(e);
                 }
             });
-        });
-    }
-    _private_err(err) {
-        if (err) {
-            this._private_clean();
-            throw Error(err);
-        }
-    }
-    _private_clean() {
-        fs.removeSync(this.destinationRoot());
-        console.log('dir cleaned');
-    }
-    _private_mkdir(dir, mode) {
-        try {
-            fs.mkdirSync(dir, mode);
-        } catch (e) {
-            if (e.errno === 34) {
-                this._private_mkdir(path.dirname(dir), mode);
-                this._private_mkdir(dir, mode);
-            }
-        }
-    }
-    _private_mkdirs(arr) {
-        var self = this;
-        arr.forEach(item => {
-            this._private_mkdir(`${item}`, 0o755);
         });
     }
 };
